@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,5 +9,155 @@
 <body>
     <h1>admin page</h1>
     <script src="/js/admin.js"></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 700px;
+            background: #fff;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 48%;
+            padding: 8px;
+            margin: 5px 1%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 12px;
+            margin: 5px 2px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.edit {
+            background: #2196F3;
+        }
+        button.delete {
+            background: #f44336;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        .action-buttons button {
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <div class="container">
+        <input type="text" id="firstname" placeholder="Ism">
+        <input type="text" id="lastname" placeholder="Familiya"><br>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Parol"><br>
+        <button onclick="addWorker()">Qo'shish</button>
+
+        <table id="workerTable">
+            <thead>
+                <tr>
+                    <th>Ism</th>
+                    <th>Familiya</th>
+                    <th>Email</th>
+                    <th>Parol</th>
+                    <th>Amallar</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function addWorker() {
+            const firstname = document.getElementById('firstname').value.trim();
+            const lastname = document.getElementById('lastname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!firstname || !lastname || !email || !password) {
+                return alert('Barcha maydonlarni to\'ldiring!');
+            }
+
+            const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
+            const row = table.insertRow();
+
+            row.insertCell(0).innerText = firstname;
+            row.insertCell(1).innerText = lastname;
+            row.insertCell(2).innerText = email;
+            row.insertCell(3).innerText = password;
+
+            const actionsCell = row.insertCell(4);
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'O\'zgartirish';
+            editBtn.className = 'edit';
+            editBtn.onclick = function() {
+                const newFirstname = prompt('Yangi ism:', row.cells[0].innerText);
+                const newLastname = prompt('Yangi familiya:', row.cells[1].innerText);
+                const newEmail = prompt('Yangi email:', row.cells[2].innerText);
+                const newPassword = prompt('Yangi parol:', row.cells[3].innerText);
+
+                if (newFirstname && newLastname && newEmail && newPassword) {
+                    row.cells[0].innerText = newFirstname.trim();
+                    row.cells[1].innerText = newLastname.trim();
+                    row.cells[2].innerText = newEmail.trim();
+                    row.cells[3].innerText = newPassword.trim();
+                }
+            };
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'O\'chirish';
+            deleteBtn.className = 'delete';
+            deleteBtn.onclick = function() {
+                if (confirm('Bu ishchini o\'chirishga ishonchingiz komilmi?')) {
+                    row.remove();
+                }
+            };
+
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'action-buttons';
+            actionDiv.appendChild(editBtn);
+            actionDiv.appendChild(deleteBtn);
+
+            actionsCell.appendChild(actionDiv);
+
+            // Formani tozalash
+            document.getElementById('firstname').value = '';
+            document.getElementById('lastname').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+    </script>
 </body>
 </html>
