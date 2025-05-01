@@ -1,0 +1,17 @@
+{
+  "name": "attendance",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "Tolkinxon",
+  "license": "ISC",
+  "description": "Attendance application for serious community",
+  "dependencies": {
+    "config": "^3.3.12"
+  }
+}
