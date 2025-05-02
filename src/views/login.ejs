@@ -1,88 +1,20 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login page</title>
-</head>
-<body>
-    <h1>Login page</h1>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/login.css">
     <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            background: #fff;
-            margin: 100px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        input[type="text"], input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px 20px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>Login</h1>
         <input type="text" id="username" placeholder="Foydalanuvchi nomi yoki email"><br>
         <input type="password" id="password" placeholder="Parol"><br>
-        <button onclick="login()">Kirish</button>
+        <button class="js-btn">Kirish</button>
         <div id="error" class="error"></div>
     </div>
 
-    <script>
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorDiv = document.getElementById('error');
-
-            if (!username || !password) {
-                errorDiv.textContent = 'Iltimos, barcha maydonlarni to‘ldiring!';
-                return;
-            }
-
-            // Bu yerga haqiqiy autentifikatsiya qo‘shish mumkin
-            if (username === 'admin' && password === '1234') {
-                alert('Muvaffaqiyatli kirdingiz!');
-                // location.href = 'admin.html'; // admin sahifaga o‘tkazish uchun
-            } else {
-                errorDiv.textContent = 'Login yoki parol noto‘g‘ri!';
-            }
-        }
-    </script>
+    <script src="/js/login.js"></script>
 </body>
 </html>

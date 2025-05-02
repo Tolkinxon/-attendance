@@ -14,7 +14,7 @@ class ViewsController {
             try{
                 const token = req.headers.token;
                 if(token) return res.render('admin');
-                return res.render('admin');
+                return res.render('login');
             }
             catch(error){
                 return globalError(error, res);

@@ -15,7 +15,7 @@
             text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             background: #fff;
             margin: 0 auto;
             padding: 20px;
@@ -133,8 +133,10 @@
             <thead>
                 <tr>
                     <th>Ism Sharif</th>
-                    <th>Kelgan kun</th>
+                    <th>Kelgan sana</th>
                     <th>Kelgan soat</th>
+                    <th>Ketgan sana</th>
+                    <th>Ketgan soat</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -179,9 +181,9 @@
 
     <script>
         const fakeData = [
-            { fullname: 'Ali Karimov', date: '01/05/2025', time: '09:00' },
-            { fullname: 'Dilnoza Ismoilova', date: '02/05/2025', time: '10:30' },
-            { fullname: 'Bekzod Toshmatov', date: '03/05/2025', time: '14:15' }
+            { fullname: 'Ali Karimov', dateIn: '01/05/2025', timeIn: '09:00', dateOut: '', timeOut: '' },
+            { fullname: 'Dilnoza Ismoilova', dateIn: '02/05/2025', timeIn: '10:30', dateOut: '', timeOut: '' },
+            { fullname: 'Bekzod Toshmatov', dateIn: '03/05/2025', timeIn: '14:15', dateOut: '', timeOut: '' }
         ];
 
         let editingRow = null;
@@ -195,8 +197,10 @@
                 nameCell.className = 'name-cell';
                 nameCell.onclick = () => openEditModal(row);
 
-                row.insertCell(1).innerText = item.date;
-                row.insertCell(2).innerText = item.time;
+                row.insertCell(1).innerText = item.dateIn;
+                row.insertCell(2).innerText = item.timeIn;
+                row.insertCell(3).innerText = item.dateOut;
+                row.insertCell(4).innerText = item.timeOut;
             });
         }
 
@@ -217,7 +221,10 @@
 
         function openEditModal(row) {
             editingRow = row;
-            const [fullname, date, time] = [row.cells[0].innerText, row.cells[1].innerText, row.cells[2].innerText];
+            const [fullname, dateIn, timeIn, dateOut, timeOut] = [
+                row.cells[0].innerText, row.cells[1].innerText, row.cells[2].innerText,
+                row.cells[3].innerText, row.cells[4].innerText
+            ];
             const [firstname, lastname] = fullname.split(' ');
             document.getElementById('firstname').value = firstname || '';
             document.getElementById('lastname').value = lastname || '';
@@ -246,8 +253,10 @@
             }
 
             const fullname = firstname + ' ' + lastname;
-            const date = new Date().toLocaleDateString('uz-UZ');
-            const time = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
+            const dateIn = new Date().toLocaleDateString('uz-UZ');
+            const timeIn = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
+            const dateOut = '';
+            const timeOut = '';
 
             const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
             const row = table.insertRow();
@@ -256,8 +265,10 @@
             nameCell.className = 'name-cell';
             nameCell.onclick = () => openEditModal(row);
 
-            row.insertCell(1).innerText = date;
-            row.insertCell(2).innerText = time;
+            row.insertCell(1).innerText = dateIn;
+            row.insertCell(2).innerText = timeIn;
+            row.insertCell(3).innerText = dateOut;
+            row.insertCell(4).innerText = timeOut;
 
             closeAddModal();
             clearAddModalInputs();
