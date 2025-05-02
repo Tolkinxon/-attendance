@@ -47,16 +47,11 @@
         th {
             background: #f2f2f2;
         }
-        .action-buttons button {
-            background: none;
-            border: none;
+        td.name-cell {
             cursor: pointer;
-            padding: 5px;
+            color: black;
+            text-decoration: none;
         }
-        .action-buttons i {
-            font-size: 18px;
-        }
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -64,33 +59,71 @@
             left: 0; top: 0;
             width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
+            overflow: auto;
         }
         .modal-content {
             background: #fff;
-            margin: 10% auto;
+            margin: 8% auto;
             padding: 20px;
             border-radius: 8px;
             width: 350px;
-            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
-        .modal-content input[type="text"], .modal-content input[type="email"], .modal-content input[type="password"] {
-            width: 90%;
+        .modal-content input[type="text"], 
+        .modal-content input[type="email"], 
+        .modal-content input[type="password"] {
+            width: 100%;
             padding: 8px;
             margin: 5px 0;
+            box-sizing: border-box;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .input-group input {
+            flex: 1;
+            margin: 0;
+        }
+        .input-group button {
+            white-space: nowrap;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .left-buttons {
+            flex: 1;
+        }
+        .right-buttons {
+            display: flex;
+            gap: 8px;
         }
         .modal-content button {
-            margin: 5px;
             padding: 6px 12px;
+            border: none;
             border-radius: 4px;
         }
         .confirm { background: #4CAF50; color: #fff; }
         .cancel { background: #f44336; color: #fff; }
         .generate-btn {
-            padding: 4px 8px;
-            margin-left: 4px;
+            background: #2196F3;
+            color: white;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: #e91e63;
+            color: white;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <h1>Admin Panel</h1>
@@ -102,39 +135,45 @@
                     <th>Ism Sharif</th>
                     <th>Kelgan kun</th>
                     <th>Kelgan soat</th>
-                    <th>Amallar</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
-    <!-- Add Modal -->
+    <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h3>Yangi Hodim Qo‘shish</h3>
+            <h3 id="modalTitle">Yangi Hodim Qo‘shish</h3>
             <input type="text" id="firstname" placeholder="Ism">
             <input type="text" id="lastname" placeholder="Familiya">
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Parol">
-            <div>
-                <input type="text" id="generateNum" placeholder="Generate Number" readonly>
+            <div class="input-group">
+                <input type="text" id="generateNum" placeholder="Generate Number" maxlength="4">
                 <button class="generate-btn" onclick="generateNumber()">Generate</button>
             </div>
-            <div style="margin-top:10px;">
-                <button class="confirm" onclick="addWorker()">Yaratish</button>
-                <button class="cancel" onclick="closeAddModal()">Bekor qilish</button>
+
+            <div class="modal-buttons">
+                <div class="left-buttons">
+                    <button id="deleteBtn" class="delete-btn" style="display: none;" onclick="openConfirmDelete()">O‘chirish</button>
+                </div>
+                <div class="right-buttons">
+                    <button id="mainActionBtn" class="confirm">Yaratish</button>
+                    <button class="cancel" onclick="closeAddModal()">Bekor qilish</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Delete Modal -->
+    <!-- Confirm Delete Modal -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-            <p>Haqiqatan o‘chirilsinmi?</p>
-            <button id="confirmDelete" class="confirm">Tasdiqlash</button>
-            <button id="cancelDelete" class="cancel">Bekor qilish</button>
+            <h3>O‘chirishni xohlaysizmi?</h3>
+            <div class="right-buttons" style="justify-content: center; margin-top: 20px;">
+                <button class="confirm" onclick="deleteWorker()">Ha</button>
+                <button class="cancel" onclick="closeConfirmModal()">Yo‘q</button>
+            </div>
         </div>
     </div>
 
@@ -145,49 +184,53 @@
             { fullname: 'Bekzod Toshmatov', date: '03/05/2025', time: '14:15' }
         ];
 
-        let rowToDelete = null;
+        let editingRow = null;
 
         function populateTable() {
             const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
             fakeData.forEach(item => {
                 const row = table.insertRow();
-                row.insertCell(0).innerText = item.fullname;
+                const nameCell = row.insertCell(0);
+                nameCell.innerText = item.fullname;
+                nameCell.className = 'name-cell';
+                nameCell.onclick = () => openEditModal(row);
+
                 row.insertCell(1).innerText = item.date;
                 row.insertCell(2).innerText = item.time;
-
-                const actionsCell = row.insertCell(3);
-                const actionDiv = document.createElement('div');
-                actionDiv.className = 'action-buttons';
-
-                const editBtn = document.createElement('button');
-                editBtn.innerHTML = '<i class="fas fa-pen"></i>';
-                editBtn.onclick = function () {
-                    const newName = prompt('Yangi Ism Sharif:', row.cells[0].innerText);
-                    const newDate = prompt('Yangi kelgan kun:', row.cells[1].innerText);
-                    const newTime = prompt('Yangi kelgan soat:', row.cells[2].innerText);
-                    if (newName && newDate && newTime) {
-                        row.cells[0].innerText = newName.trim();
-                        row.cells[1].innerText = newDate.trim();
-                        row.cells[2].innerText = newTime.trim();
-                    }
-                };
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                deleteBtn.onclick = function () {
-                    rowToDelete = row;
-                    document.getElementById('confirmModal').style.display = 'block';
-                };
-
-                actionDiv.appendChild(editBtn);
-                actionDiv.appendChild(deleteBtn);
-                actionsCell.appendChild(actionDiv);
             });
         }
 
         function generateNumber() {
-            let num = Math.floor(Math.random() * 9000) + 1000; // 1000 to 9999
+            let num = Math.floor(Math.random() * 9000) + 1000;
             document.getElementById('generateNum').value = num;
+        }
+
+        function openAddModal() {
+            editingRow = null;
+            document.getElementById('modalTitle').innerText = 'Yangi Hodim Qo‘shish';
+            document.getElementById('mainActionBtn').innerText = 'Yaratish';
+            document.getElementById('mainActionBtn').onclick = addWorker;
+            document.getElementById('deleteBtn').style.display = 'none';
+            clearAddModalInputs();
+            document.getElementById('addModal').style.display = 'block';
+        }
+
+        function openEditModal(row) {
+            editingRow = row;
+            const [fullname, date, time] = [row.cells[0].innerText, row.cells[1].innerText, row.cells[2].innerText];
+            const [firstname, lastname] = fullname.split(' ');
+            document.getElementById('firstname').value = firstname || '';
+            document.getElementById('lastname').value = lastname || '';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('generateNum').value = '';
+
+            document.getElementById('modalTitle').innerText = 'Ma\'lumotni Yangilash';
+            document.getElementById('mainActionBtn').innerText = 'Yangilash';
+            document.getElementById('mainActionBtn').onclick = updateWorker;
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+
+            document.getElementById('addModal').style.display = 'block';
         }
 
         function addWorker() {
@@ -208,44 +251,53 @@
 
             const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
             const row = table.insertRow();
-            row.insertCell(0).innerText = fullname;
+            const nameCell = row.insertCell(0);
+            nameCell.innerText = fullname;
+            nameCell.className = 'name-cell';
+            nameCell.onclick = () => openEditModal(row);
+
             row.insertCell(1).innerText = date;
             row.insertCell(2).innerText = time;
-
-            const actionsCell = row.insertCell(3);
-            const actionDiv = document.createElement('div');
-            actionDiv.className = 'action-buttons';
-
-            const editBtn = document.createElement('button');
-            editBtn.innerHTML = '<i class="fas fa-pen"></i>';
-            editBtn.onclick = function () {
-                const newName = prompt('Yangi Ism Sharif:', row.cells[0].innerText);
-                const newDate = prompt('Yangi kelgan kun:', row.cells[1].innerText);
-                const newTime = prompt('Yangi kelgan soat:', row.cells[2].innerText);
-                if (newName && newDate && newTime) {
-                    row.cells[0].innerText = newName.trim();
-                    row.cells[1].innerText = newDate.trim();
-                    row.cells[2].innerText = newTime.trim();
-                }
-            };
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-            deleteBtn.onclick = function () {
-                rowToDelete = row;
-                document.getElementById('confirmModal').style.display = 'block';
-            };
-
-            actionDiv.appendChild(editBtn);
-            actionDiv.appendChild(deleteBtn);
-            actionsCell.appendChild(actionDiv);
 
             closeAddModal();
             clearAddModalInputs();
         }
 
-        function openAddModal() {
-            document.getElementById('addModal').style.display = 'block';
+        function updateWorker() {
+            if (!editingRow) return;
+
+            const firstname = document.getElementById('firstname').value.trim();
+            const lastname = document.getElementById('lastname').value.trim();
+
+            if (!firstname || !lastname) {
+                alert('Ism va familiya bo‘sh bo‘lishi mumkin emas!');
+                return;
+            }
+
+            const fullname = firstname + ' ' + lastname;
+            editingRow.cells[0].innerText = fullname;
+            editingRow.cells[1].innerText = new Date().toLocaleDateString('uz-UZ');
+            editingRow.cells[2].innerText = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
+
+            closeAddModal();
+            clearAddModalInputs();
+        }
+
+        function openConfirmDelete() {
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function deleteWorker() {
+            if (editingRow) {
+                editingRow.remove();
+            }
+            closeConfirmModal();
+            closeAddModal();
+            clearAddModalInputs();
         }
 
         function closeAddModal() {
@@ -260,29 +312,20 @@
             document.getElementById('generateNum').value = '';
         }
 
-        document.getElementById('confirmDelete').onclick = function () {
-            if (rowToDelete) {
-                rowToDelete.remove();
-                rowToDelete = null;
-            }
-            document.getElementById('confirmModal').style.display = 'none';
-        };
-
-        document.getElementById('cancelDelete').onclick = function () {
-            rowToDelete = null;
-            document.getElementById('confirmModal').style.display = 'none';
-        };
-
         window.onclick = function(event) {
-            if (event.target == document.getElementById('confirmModal')) {
-                document.getElementById('confirmModal').style.display = 'none';
-            }
             if (event.target == document.getElementById('addModal')) {
-                document.getElementById('addModal').style.display = 'none';
+                closeAddModal();
+            }
+            if (event.target == document.getElementById('confirmModal')) {
+                closeConfirmModal();
             }
         };
 
         window.onload = populateTable;
+
+        document.getElementById('generateNum').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);
+        });
     </script>
 </body>
 </html>
