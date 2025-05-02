@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kamera orqali rasm olish</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      background: #000;
+    }
+
+    video, canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    video {
+      transform: scaleX(-1);
+    }
+
+    #snap {
+      margin-top: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      background: #ff4d4f;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+
+    #snap:hover {
+      background: #ff2a2e;
+    }
+
+    .action-buttons {
+      margin-top: 20px;
+      display: none;
+      gap: 10px;
+    }
+
+    .action-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #upload {
+      background: #4caf50;
+      color: white;
+    }
+
+    #upload:hover {
+      background: #43a047;
+    }
+
+    #cancel {
+      background: #f44336;
+      color: white;
+    }
+
+    #cancel:hover {
+      background: #e53935;
+    }
+  </style>
+</head>
+<body>
+  <h2>Rasmga olish</h2>
+
+  <div class="video-container">
+    <video id="video" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+  </div>
+
+  <button id="snap"><i class="fa-solid fa-camera"></i></button>
+
+  <div class="action-buttons">
+    <button id="upload"><i class="fa-solid fa-paper-plane"></i> Yuborish</button>
+    <button id="cancel"><i class="fa-solid fa-xmark"></i> Bekor qilish</button>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snapBtn = document.getElementById('snap');
+    const uploadBtn = document.getElementById('upload');
+    const cancelBtn = document.getElementById('cancel');
+    const actionButtons = document.querySelector('.action-buttons');
+    const context = canvas.getContext('2d');
+
+    // Kamerani ishga tushurish
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        console.error('Kamera ochilmadi:', err);
+      });
+
+    // Rasmni olish
+    snapBtn.addEventListener('click', () => {
+      // canvas o‘lchamini video o‘lchamiga moslash
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      context.save();
+      // ko‘zgu effekti uchun chizma o‘lchamini ag'darish
+      context.scale(-1, 1);
+      // o‘ngdan chapga chizish uchun koordinata o‘zgartirish
+      context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+      context.restore();
+
+      video.style.display = 'none';
+      canvas.style.display = 'block';
+      snapBtn.style.display = 'none';
+      actionButtons.style.display = 'flex';
+    });
+
+    // Rasmni yuborish
+    uploadBtn.addEventListener('click', async () => {
+      canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append('photo', blob, 'photo.jpg');
+
+        fetch('http://localhost:3000/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.text())
+        .then(data => alert('Yuborildi: ' + data))
+        .catch(err => alert('Xatolik: ' + err));
+      }, 'image/jpeg');
+    });
+
+    // Bekor qilish
+    cancelBtn.addEventListener('click', () => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      video.style.display = 'block';
+      canvas.style.display = 'none';
+      snapBtn.style.display = 'inline-block';
+      actionButtons.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

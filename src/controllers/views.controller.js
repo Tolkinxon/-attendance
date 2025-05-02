@@ -14,7 +14,15 @@ class ViewsController {
             try{
                 const token = req.headers.token;
                 if(token) return res.render('admin');
-                return res.render('login');
+                return res.render('admin');
+            }
+            catch(error){
+                return globalError(error, res);
+            }
+        }
+        this.TAKING_PHOTO = async function(req, res, next){
+            try{
+                return res.render('takingPhoto');
             }
             catch(error){
                 return globalError(error, res);
