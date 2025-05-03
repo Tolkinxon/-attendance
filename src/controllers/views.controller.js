@@ -12,8 +12,14 @@ class ViewsController {
         }
         this.ADMIN = async function(req, res, next){
             try{
-                const token = req.headers.token;
-                if(token) return res.render('admin');
+                return res.render('admin');
+            }
+            catch(error){
+                return globalError(error, res);
+            }
+        }
+        this.LOGIN = async function(req, res, next){
+            try{
                 return res.render('login');
             }
             catch(error){
