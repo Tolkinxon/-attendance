@@ -1,4 +1,6 @@
 import { ClientError, globalError } from 'shokhijakhon-error-handler';
+import { tokenServise } from '../lib/jwt.js';
+const { createToken } = tokenServise;
 
 class AdminController {
     constructor(){
@@ -8,9 +10,9 @@ class AdminController {
                 const adminsData = await req.readFile('admin');
                 for(let prevAdmin of adminsData){
                     if(admin.name_or_email.includes('@')){
-                        if(prevAdmin.email == admin.name_or_email && prevAdmin.password == admin.password) return res.status(200).json({message: "user successfulle logged", status:200, prevAdmin});
+                        if(prevAdmin.email == admin.name_or_email && prevAdmin.password == admin.password) return res.status(200).json({message: "user successfulle logged", status:200, accessToken: createToken({name: 'tolkinxon' })});
                     } else {
-                        if(prevAdmin.name == admin.name_or_email && prevAdmin.password == admin.password) return res.status(200).json({message: "user successfulle logged", status:200, prevAdmin});
+                        if(prevAdmin.name == admin.name_or_email && prevAdmin.password == admin.password) return res.status(200).json({message: "user successfulle logged", status:200, accessToken: createToken({name: 'tolkinxon' })});
                     }
                 }
                 throw new ClientError("Email or password wrong!", 400);
