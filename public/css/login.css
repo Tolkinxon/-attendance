@@ -16,7 +16,7 @@ body {
 h1 {
     margin-bottom: 20px;
 }
-input[type="text"], input[type="password"] {
+input[type="email"], input[type="password"] {
     width: 90%;
     padding: 10px;
     margin: 10px 0;

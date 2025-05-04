@@ -3,10 +3,9 @@ let token = window.localStorage.getItem('token');
 if(token) window.location = '/admin'
 
 
-const elBtn = document.querySelector('.js-btn');
-const username = document.getElementById('username');
-const password = document.getElementById('password');
-const errorDiv = document.getElementById('error');
+
+const errorDiv = document.querySelector('.error');
+const elForm = document.querySelector('.js-form');
 
 async function sendData (data){
     const req = await fetch('/api/login', {
@@ -16,18 +15,21 @@ async function sendData (data){
     })
 
     const res = await req.json();
-    if(res.status == 400) return alert(res.message)
-    window.localStorage.setItem('token', JSON.stringify(res.accessToken));
-}
-
-function login() {
-    const data = {
-        name_or_email: username.value.trim(),
-        password: password.value.trim()
+    if(res.status == 400) {
+        errorDiv.innerHTML = '';
+        const p = document.createElement('p');
+        p.textContent = res.message;
+        return errorDiv.append(p);
     }
-    if(!username.value.trim() || !password.value.trim()) return alert('Email or password empty!')
-    sendData(data);
+    window.localStorage.setItem('token', JSON.stringify(res.accessToken));
     window.location.reload();
 }
 
-elBtn.addEventListener('click', login);
+elForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const formData = new FormData(elForm);
+    const data = Object.fromEntries(formData);
+
+    sendData(data);
+});

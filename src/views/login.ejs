@@ -9,9 +9,11 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <input type="text" id="username" placeholder="Foydalanuvchi nomi yoki email"><br>
-        <input type="password" id="password" placeholder="Parol"><br>
-        <button class="js-btn">Kirish</button>
+        <form class="js-form" autocomplete="off">
+            <input type="email" id="username" name="email" placeholder="Foydalanuvchi email"><br>
+            <input type="password" id="password" name="password" placeholder="Parol"><br>
+            <button class="js-btn">Kirish</button>
+        </form>
         <div id="error" class="error"></div>
     </div>
 

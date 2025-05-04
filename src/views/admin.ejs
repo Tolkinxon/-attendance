@@ -128,7 +128,7 @@
 <body>
     <h1>Admin Panel</h1>
     <div class="container">
-        <button class="add-btn" onclick="openAddModal()">Yangi Hodim Qo‘shish</button>
+        <button class="add-btn" onclick="openAddModal()">Yangi Hodim Qo'shish</button>
         <table id="workerTable">
             <thead>
                 <tr>
@@ -145,41 +145,42 @@
 
     <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Yangi Hodim Qo‘shish</h3>
-            <input type="text" id="firstname" placeholder="Ism">
-            <input type="text" id="lastname" placeholder="Familiya">
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Parol">
+        <h3 id="modalTitle">Yangi Hodim Qo'shish</h3>
+        <form class="modal-content js-form">
+            <input name="fname" type="text" id="firstname" placeholder="Ism">
+            <input name="lname" type="text" id="lastname" placeholder="Familiya">
+            <input name="email" type="email" id="email" placeholder="Email">
+            <input name="phone_number" type="number" id="password" placeholder="Phone number">
             <div class="input-group">
-                <input type="text" id="generateNum" placeholder="Generate Number" maxlength="4">
-                <button class="generate-btn" onclick="generateNumber()">Generate</button>
+                <input name="user_id" type="text" id="generateNum" placeholder="Generate Number" maxlength="4">
+                <button type="button" class="generate-btn" onclick="generateNumber()">Generate</button>
             </div>
 
             <div class="modal-buttons">
                 <div class="left-buttons">
-                    <button id="deleteBtn" class="delete-btn" style="display: none;" onclick="openConfirmDelete()">O‘chirish</button>
+                    <button type="button" id="deleteBtn" class="delete-btn" style="display: none;" onclick="openConfirmDelete()">O‘chirish</button>
                 </div>
                 <div class="right-buttons">
                     <button id="mainActionBtn" class="confirm">Yaratish</button>
-                    <button class="cancel" onclick="closeAddModal()">Bekor qilish</button>
+                    <button type="button" class="cancel" onclick="closeAddModal()">Bekor qilish</button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <!-- Confirm Delete Modal -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-            <h3>O‘chirishni xohlaysizmi?</h3>
+            <h3>O'chirishni xohlaysizmi?</h3>
             <div class="right-buttons" style="justify-content: center; margin-top: 20px;">
                 <button class="confirm" onclick="deleteWorker()">Ha</button>
-                <button class="cancel" onclick="closeConfirmModal()">Yo‘q</button>
+                <button class="cancel" onclick="closeConfirmModal()">Yo'q</button>
             </div>
         </div>
     </div>
 
     <script>
+        const elForm = document.querySelector('.js-form');
         const fakeData = [
             { fullname: 'Ali Karimov', dateIn: '01/05/2025', timeIn: '09:00', dateOut: '', timeOut: '' },
             { fullname: 'Dilnoza Ismoilova', dateIn: '02/05/2025', timeIn: '10:30', dateOut: '', timeOut: '' },
@@ -211,9 +212,8 @@
 
         function openAddModal() {
             editingRow = null;
-            document.getElementById('modalTitle').innerText = 'Yangi Hodim Qo‘shish';
+            document.getElementById('modalTitle').innerText = "Yangi Hodim Qo'shish";
             document.getElementById('mainActionBtn').innerText = 'Yaratish';
-            document.getElementById('mainActionBtn').onclick = addWorker;
             document.getElementById('deleteBtn').style.display = 'none';
             clearAddModalInputs();
             document.getElementById('addModal').style.display = 'block';
@@ -240,39 +240,28 @@
             document.getElementById('addModal').style.display = 'block';
         }
 
-        function addWorker() {
-            const firstname = document.getElementById('firstname').value.trim();
-            const lastname = document.getElementById('lastname').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const genNum = document.getElementById('generateNum').value.trim();
+        async function sendEmployee (data){
+        const req = await fetch('/api/admin', {
+            method: 'POST',
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify(data)
+        })
 
-            if (!firstname || !lastname || !email || !password || !genNum) {
-                alert('Barcha maydonlarni to‘ldiring!');
-                return;
-            }
-
-            const fullname = firstname + ' ' + lastname;
-            const dateIn = new Date().toLocaleDateString('uz-UZ');
-            const timeIn = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
-            const dateOut = '';
-            const timeOut = '';
-
-            const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
-            const row = table.insertRow();
-            const nameCell = row.insertCell(0);
-            nameCell.innerText = fullname;
-            nameCell.className = 'name-cell';
-            nameCell.onclick = () => openEditModal(row);
-
-            row.insertCell(1).innerText = dateIn;
-            row.insertCell(2).innerText = timeIn;
-            row.insertCell(3).innerText = dateOut;
-            row.insertCell(4).innerText = timeOut;
-
-            closeAddModal();
-            clearAddModalInputs();
+        const res = await req.json();
+        if(res.status == 400) {
+            return alert(res.message)
         }
+        console.log(res);
+    }
+
+
+        elForm.addEventListener('submit', (evt)=>{
+            evt.preventDefault();
+            const formData = new FormData(elForm);
+            const data = Object.fromEntries(formData);
+            sendEmployee(data);
+            closeAddModal();
+        })
 
         function updateWorker() {
             if (!editingRow) return;
@@ -338,5 +327,6 @@
             this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);
         });
     </script>
+    <script src="/js/admin.js"></script>
 </body>
 </html>
