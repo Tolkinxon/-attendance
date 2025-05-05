@@ -74,7 +74,8 @@
         }
         .modal-content input[type="text"], 
         .modal-content input[type="email"], 
-        .modal-content input[type="password"] {
+        .modal-content input[type="password"],
+        .modal-content input[type="number"] {
             width: 100%;
             padding: 8px;
             margin: 5px 0;
@@ -115,9 +116,14 @@
         .confirm { background: #4CAF50; color: #fff; }
         .cancel { background: #f44336; color: #fff; }
         .generate-btn {
-            background: #2196F3;
+            background: gray;
             color: white;
             cursor: pointer;
+            border-radius: 2px;
+            outline: none;
+            padding: 5px;
+            border: none;
+
         }
         .delete-btn {
             background: #e91e63;
@@ -137,6 +143,7 @@
                     <th>Kelgan soat</th>
                     <th>Ketgan sana</th>
                     <th>Ketgan soat</th>
+                    <th>1 Haftalik</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -146,7 +153,7 @@
     <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">
         <h3 id="modalTitle">Yangi Hodim Qo'shish</h3>
-        <form class="modal-content js-form">
+        <form class="modal-content js-form" autocomplete="off">
             <input name="fname" type="text" id="firstname" placeholder="Ism">
             <input name="lname" type="text" id="lastname" placeholder="Familiya">
             <input name="email" type="email" id="email" placeholder="Email">
@@ -179,6 +186,26 @@
         </div>
     </div>
 
+    <!-- 1 Haftalik Modal -->
+    <div id="weeklyModal" class="modal">
+        <div class="modal-content" style="width: 600px;">
+            <h3 id="weeklyTitle">1 Haftalik Ma'lumot</h3>
+            <table style="width: 100%; margin-top: 10px;">
+                <thead>
+                    <tr>
+                        <th>Ism Sharif</th>
+                        <th>Kelgan sana</th>
+                        <th>Kelgan soat</th>
+                        <th>Ketgan sana</th>
+                        <th>Ketgan soat</th>
+                    </tr>
+                </thead>
+                <tbody id="weeklyTableBody"></tbody>
+            </table>
+            <button style="margin-top: 20px;" class="cancel" onclick="closeWeeklyModal()">Yopish</button>
+        </div>
+    </div>
+
     <script>
         const elForm = document.querySelector('.js-form');
         const fakeData = [
@@ -202,7 +229,33 @@
                 row.insertCell(2).innerText = item.timeIn;
                 row.insertCell(3).innerText = item.dateOut;
                 row.insertCell(4).innerText = item.timeOut;
+
+                const weekCell = row.insertCell(5);
+                const btn = document.createElement('button');
+                btn.textContent = '1 Haftalik';
+                btn.className = 'generate-btn';
+                btn.onclick = () => openWeeklyModal(item.fullname);
+                weekCell.appendChild(btn);
             });
+        }
+
+        function openWeeklyModal(fullname) {
+            document.getElementById('weeklyTitle').innerText = fullname + " - 1 Haftalik Ma'lumot";
+            const tbody = document.getElementById('weeklyTableBody');
+            tbody.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = fullname;
+                row.insertCell(1).innerText = `0${i+1}/05/2025`;
+                row.insertCell(2).innerText = '09:00';
+                row.insertCell(3).innerText = `0${i+1}/05/2025`;
+                row.insertCell(4).innerText = '18:00';
+            }
+            document.getElementById('weeklyModal').style.display = 'block';
+        }
+
+        function closeWeeklyModal() {
+            document.getElementById('weeklyModal').style.display = 'none';
         }
 
         function generateNumber() {
@@ -240,20 +293,18 @@
             document.getElementById('addModal').style.display = 'block';
         }
 
-        async function sendEmployee (data){
-        const req = await fetch('/api/admin', {
-            method: 'POST',
-            headers:{"Content-Type":"application/json"},
-            body: JSON.stringify(data)
-        })
-
-        const res = await req.json();
-        if(res.status == 400) {
-            return alert(res.message)
+        async function sendEmployee(data){
+            const req = await fetch('/api/admin', {
+                method: 'POST',
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify(data)
+            })
+            const res = await req.json();
+            if(res.status == 400) {
+                return alert(res.message)
+            }
+            console.log(res);
         }
-        console.log(res);
-    }
-
 
         elForm.addEventListener('submit', (evt)=>{
             evt.preventDefault();
@@ -265,20 +316,16 @@
 
         function updateWorker() {
             if (!editingRow) return;
-
             const firstname = document.getElementById('firstname').value.trim();
             const lastname = document.getElementById('lastname').value.trim();
-
             if (!firstname || !lastname) {
                 alert('Ism va familiya bo‘sh bo‘lishi mumkin emas!');
                 return;
             }
-
             const fullname = firstname + ' ' + lastname;
             editingRow.cells[0].innerText = fullname;
             editingRow.cells[1].innerText = new Date().toLocaleDateString('uz-UZ');
             editingRow.cells[2].innerText = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
-
             closeAddModal();
             clearAddModalInputs();
         }
@@ -319,6 +366,9 @@
             if (event.target == document.getElementById('confirmModal')) {
                 closeConfirmModal();
             }
+            if (event.target == document.getElementById('weeklyModal')) {
+                closeWeeklyModal();
+            }
         };
 
         window.onload = populateTable;
@@ -327,6 +377,5 @@
             this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);
         });
     </script>
-    <script src="/js/admin.js"></script>
 </body>
 </html>
