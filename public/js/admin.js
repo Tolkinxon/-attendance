@@ -1,6 +1,6 @@
 let token = window.localStorage.getItem('token');
     token = token ? JSON.parse(token):'';
-if(!token) window.location = '/login'
+if(!token) window.location = '/login';
 
 
 const elForm = document.querySelector('.js-form');
@@ -12,20 +12,46 @@ const fakeData = [
 
 let editingRow = null;
 
-function populateTable() {
-    const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
-    fakeData.forEach(item => {
-        const row = table.insertRow();
-        const nameCell = row.insertCell(0);
-        nameCell.innerText = item.fullname;
-        nameCell.className = 'name-cell';
-        nameCell.onclick = () => openEditModal(row);
+// function populateTable() {
+//     const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
+//     fakeData.forEach(item => {
+//         const row = table.insertRow();
+//         const nameCell = row.insertCell(0);
+//         nameCell.innerText = item.fullname;
+//         nameCell.className = 'name-cell';
+//         nameCell.onclick = () => openEditModal(row);
 
-        row.insertCell(1).innerText = item.dateIn;
-        row.insertCell(2).innerText = item.timeIn;
-        row.insertCell(3).innerText = item.dateOut;
-        row.insertCell(4).innerText = item.timeOut;
-    });
+//         row.insertCell(1).innerText = item.dateIn;
+//         row.insertCell(2).innerText = item.timeIn;
+//         row.insertCell(3).innerText = item.dateOut;
+//         row.insertCell(4).innerText = item.timeOut;
+
+//         const weekCell = row.insertCell(5);
+//         const btn = document.createElement('button');
+//         btn.textContent = '1 Haftalik';
+//         btn.className = 'generate-btn';
+//         btn.onclick = () => openWeeklyModal(item.fullname);
+//         weekCell.appendChild(btn);
+//     });
+// }
+
+// function openWeeklyModal(fullname) {
+//     document.getElementById('weeklyTitle').innerText = fullname + " - 1 Haftalik Ma'lumot";
+//     const tbody = document.getElementById('weeklyTableBody');
+//     tbody.innerHTML = '';
+//     for (let i = 0; i < 7; i++) {
+//         const row = tbody.insertRow();
+//         row.insertCell(0).innerText = fullname;
+//         row.insertCell(1).innerText = `0${i+1}/05/2025`;
+//         row.insertCell(2).innerText = '09:00';
+//         row.insertCell(3).innerText = `0${i+1}/05/2025`;
+//         row.insertCell(4).innerText = '18:00';
+//     }
+//     document.getElementById('weeklyModal').style.display = 'block';
+// }
+
+function closeWeeklyModal() {
+    document.getElementById('weeklyModal').style.display = 'none';
 }
 
 function generateNumber() {
@@ -63,20 +89,18 @@ function openEditModal(row) {
     document.getElementById('addModal').style.display = 'block';
 }
 
-async function sendEmployee (data){
-const req = await fetch('/api/admin', {
-    method: 'POST',
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify(data)
-})
-
-const res = await req.json();
-if(res.status == 400) {
-    return alert(res.message)
+async function sendEmployee(data){
+    const req = await fetch('/api/admin', {
+        method: 'POST',
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
+    const res = await req.json();
+    if(res.status == 400) {
+        return alert(res.message)
+    }
+    console.log(res);
 }
-console.log(res);
-}
-
 
 elForm.addEventListener('submit', (evt)=>{
     evt.preventDefault();
@@ -88,20 +112,16 @@ elForm.addEventListener('submit', (evt)=>{
 
 function updateWorker() {
     if (!editingRow) return;
-
     const firstname = document.getElementById('firstname').value.trim();
     const lastname = document.getElementById('lastname').value.trim();
-
     if (!firstname || !lastname) {
         alert('Ism va familiya bo‘sh bo‘lishi mumkin emas!');
         return;
     }
-
     const fullname = firstname + ' ' + lastname;
     editingRow.cells[0].innerText = fullname;
     editingRow.cells[1].innerText = new Date().toLocaleDateString('uz-UZ');
     editingRow.cells[2].innerText = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
-
     closeAddModal();
     clearAddModalInputs();
 }
@@ -141,6 +161,9 @@ window.onclick = function(event) {
     }
     if (event.target == document.getElementById('confirmModal')) {
         closeConfirmModal();
+    }
+    if (event.target == document.getElementById('weeklyModal')) {
+        closeWeeklyModal();
     }
 };
 

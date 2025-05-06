@@ -1,26 +1,10 @@
 [
     {
         "id": 1,
-        "fname": "",
-        "lname": "",
-        "phone_number": "",
-        "email": "",
-        "user_id": 1
-    },
-    {
-        "id": 2,
-        "fname": "q",
-        "lname": "q",
-        "email": "q@d.w",
-        "phone_number": "321",
-        "user_id": "2717"
-    },
-    {
-        "id": 3,
-        "fname": "dsd",
-        "lname": "ds",
-        "email": "d@ds.ds",
-        "phone_number": "3121",
-        "user_id": "2503"
+        "fname": "Tolkinxon",
+        "lname": "Soliyev",
+        "phone_number": "998774779844",
+        "email": "tolkinxon@gmail.com",
+        "user_id": 7777
     }
 ]

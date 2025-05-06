@@ -12,7 +12,8 @@ class ViewsController {
         }
         this.ADMIN = async function(req, res, next){
             try{
-                return res.render('admin');
+                const data = await  req.allAdminPageData
+                return res.render('admin', data);
             }
             catch(error){
                 return globalError(error, res);

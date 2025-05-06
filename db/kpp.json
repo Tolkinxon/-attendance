@@ -2,6 +2,21 @@
     {
         "id": 1,
         "gate_number": "A1",
-        "gate_location": "north"
+        "gate_location": "Shimoliy"
+    },
+    {
+        "id": 2,
+        "gate_number": "A2",
+        "gate_location": "Janubiy"
+    },
+    {
+        "id": 3,
+        "gate_number": "B1",
+        "gate_location": "G'arbiy"
+    },
+    {
+        "id": 4,
+        "gate_number": "B2",
+        "gate_location": "Sharqiy"
     }
 ]
