@@ -4,6 +4,7 @@ if(!token) window.location = '/login';
 
 
 const elForm = document.querySelector('.js-form');
+const elOpenWeeklyModal = document.querySelector('.open-weekly-modal-btn');
 const fakeData = [
     { fullname: 'Ali Karimov', dateIn: '01/05/2025', timeIn: '09:00', dateOut: '', timeOut: '' },
     { fullname: 'Dilnoza Ismoilova', dateIn: '02/05/2025', timeIn: '10:30', dateOut: '', timeOut: '' },
@@ -49,6 +50,8 @@ let editingRow = null;
 //     }
 //     document.getElementById('weeklyModal').style.display = 'block';
 // }
+
+elOpenWeeklyModal.addEventListener('click', openWeeklyModal)
 
 function closeWeeklyModal() {
     document.getElementById('weeklyModal').style.display = 'none';
@@ -167,7 +170,7 @@ window.onclick = function(event) {
     }
 };
 
-window.onload = populateTable;
+// window.onload = populateTable;
 
 document.getElementById('generateNum').addEventListener('input', function (e) {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);
