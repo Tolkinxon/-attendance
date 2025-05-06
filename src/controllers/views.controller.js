@@ -13,9 +13,23 @@ class ViewsController {
         this.ADMIN = async function(req, res, next){
             try{
                 const data = await  req.allAdminPageData
-                return res.render('admin', data);
+                const id = {id:0}
+                return res.render('admin', {...data, ...id});
             }
             catch(error){
+                return globalError(error, res);
+            }
+        }
+        
+        this.SELECTED_EPLOYEE = async function(req, res) {
+            try {
+                console.log(req.body);
+                
+                const data = await  req.allAdminPageData
+                return res.render('admin', {...data, ...req.body});
+                
+
+            } catch (error) {
                 return globalError(error, res);
             }
         }

@@ -33,6 +33,32 @@ class AdminController {
                 return globalError(error, res);
             }
         }
+        this.GET = async function(req, res) {
+            try {
+                const id = req.params.id;
+                const control = await req.readFile('control');
+                const employee = await req.readFile('employee');
+                const kpp = await req.readFile('kpp');
+
+                const filteredControlData = control.filter(item => item.emp_id == id);
+                filteredControlData.map(item => {
+                    for(let kppItem of kpp){
+                        if(kppItem.id == item.kpp_id) {item.gate_location = kppItem.gate_location; break;}
+                    }
+                })
+                const foundedEmployee = employee.find(item => item.id == id);
+                console.log(filteredControlData);
+                
+                
+
+          
+                res.status(200).json({status:200, message: "User successfully founded", data: {control: filteredControlData, name: foundedEmployee.fname +" "+ foundedEmployee.lname}});
+
+            } catch (error) {
+                return globalError(error, res);
+            }
+        }
+
     }
 }
 

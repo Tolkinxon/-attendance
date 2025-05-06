@@ -2,59 +2,42 @@ let token = window.localStorage.getItem('token');
     token = token ? JSON.parse(token):'';
 if(!token) window.location = '/login';
 
-
 const elForm = document.querySelector('.js-form');
-const elOpenWeeklyModal = document.querySelector('.open-weekly-modal-btn');
-const fakeData = [
-    { fullname: 'Ali Karimov', dateIn: '01/05/2025', timeIn: '09:00', dateOut: '', timeOut: '' },
-    { fullname: 'Dilnoza Ismoilova', dateIn: '02/05/2025', timeIn: '10:30', dateOut: '', timeOut: '' },
-    { fullname: 'Bekzod Toshmatov', dateIn: '03/05/2025', timeIn: '14:15', dateOut: '', timeOut: '' }
-];
+const elWeeklyTable = document.querySelector('#workerTable');
+const elWeeklyTableBody = document.querySelector('#weeklyTableBody');
 
-let editingRow = null;
+function renderWeeklData(arr, node){
+    node.innerHTML='';
+    const fragment = document.createDocumentFragment();
+    const temporaryFragment = document.createDocumentFragment();
+ 
+    arr.forEach(({time, gate_location}, idx) => {
+        const td1 = document.createElement('td');
+        const td2 = document.createElement('td');
+        const td3 = document.createElement('td');
+        const td4 = document.createElement('td');
+        const td5 = document.createElement('td');
+        const td6 = document.createElement('td');
 
-// function populateTable() {
-//     const table = document.getElementById('workerTable').getElementsByTagName('tbody')[0];
-//     fakeData.forEach(item => {
-//         const row = table.insertRow();
-//         const nameCell = row.insertCell(0);
-//         nameCell.innerText = item.fullname;
-//         nameCell.className = 'name-cell';
-//         nameCell.onclick = () => openEditModal(row);
-
-//         row.insertCell(1).innerText = item.dateIn;
-//         row.insertCell(2).innerText = item.timeIn;
-//         row.insertCell(3).innerText = item.dateOut;
-//         row.insertCell(4).innerText = item.timeOut;
-
-//         const weekCell = row.insertCell(5);
-//         const btn = document.createElement('button');
-//         btn.textContent = '1 Haftalik';
-//         btn.className = 'generate-btn';
-//         btn.onclick = () => openWeeklyModal(item.fullname);
-//         weekCell.appendChild(btn);
-//     });
-// }
-
-// function openWeeklyModal(fullname) {
-//     document.getElementById('weeklyTitle').innerText = fullname + " - 1 Haftalik Ma'lumot";
-//     const tbody = document.getElementById('weeklyTableBody');
-//     tbody.innerHTML = '';
-//     for (let i = 0; i < 7; i++) {
-//         const row = tbody.insertRow();
-//         row.insertCell(0).innerText = fullname;
-//         row.insertCell(1).innerText = `0${i+1}/05/2025`;
-//         row.insertCell(2).innerText = '09:00';
-//         row.insertCell(3).innerText = `0${i+1}/05/2025`;
-//         row.insertCell(4).innerText = '18:00';
-//     }
-//     document.getElementById('weeklyModal').style.display = 'block';
-// }
-
-elOpenWeeklyModal.addEventListener('click', openWeeklyModal)
-
-function closeWeeklyModal() {
-    document.getElementById('weeklyModal').style.display = 'none';
+        
+        if(idx % 2 == 1){
+            const tr = document.createElement('tr');
+            td4.textContent = time.split('/')[0] + " " + time.split('/')[1];
+            td5.textContent =  time.split('/')[2];
+            td6.textContent = gate_location;
+            tr.append(temporaryFragment);
+            tr.append(td4, td5, td6);
+            fragment.append(tr);
+            temporaryFragment.innerHTML = '';
+        }
+        if(idx % 2 == 0){
+            td1.textContent = time.split('/')[0] + " " + time.split('/')[1];
+            td2.textContent =  time.split('/')[2];
+            td3.textContent =  gate_location;
+            temporaryFragment.append(td1, td2, td3)
+        }
+    });
+    node.append(fragment);
 }
 
 function generateNumber() {
@@ -70,16 +53,9 @@ function openAddModal() {
     clearAddModalInputs();
     document.getElementById('addModal').style.display = 'block';
 }
-
-function openEditModal(row) {
-    editingRow = row;
-    const [fullname, dateIn, timeIn, dateOut, timeOut] = [
-        row.cells[0].innerText, row.cells[1].innerText, row.cells[2].innerText,
-        row.cells[3].innerText, row.cells[4].innerText
-    ];
-    const [firstname, lastname] = fullname.split(' ');
-    document.getElementById('firstname').value = firstname || '';
-    document.getElementById('lastname').value = lastname || '';
+function openEditModal() {
+    document.getElementById('firstname').value = '';
+    document.getElementById('lastname').value = '';
     document.getElementById('email').value = '';
     document.getElementById('password').value = '';
     document.getElementById('generateNum').value = '';
@@ -91,7 +67,6 @@ function openEditModal(row) {
 
     document.getElementById('addModal').style.display = 'block';
 }
-
 async function sendEmployee(data){
     const req = await fetch('/api/admin', {
         method: 'POST',
@@ -104,7 +79,15 @@ async function sendEmployee(data){
     }
     console.log(res);
 }
-
+async function getEmployee(id){
+    const req = await fetch(`/api/admin/${id}`)
+    const res = await req.json();
+    if(res.status == 400) {
+        return alert(res.message)
+    }
+    console.log(res);
+    renderWeeklData(res.data.control, elWeeklyTableBody);
+}
 elForm.addEventListener('submit', (evt)=>{
     evt.preventDefault();
     const formData = new FormData(elForm);
@@ -112,44 +95,44 @@ elForm.addEventListener('submit', (evt)=>{
     sendEmployee(data);
     closeAddModal();
 })
-
+elWeeklyTable.addEventListener('click', (evt)=>{
+     const openWeeklyModalBtn =   evt.target.matches('.open-weekly-modal-btn');
+     const editTd=   evt.target.matches('.js-edit-td');
+     
+     if(openWeeklyModalBtn){
+        getEmployee(evt.target.dataset.id)
+        openWeeklyModal();
+     }
+     if(editTd){
+        console.log(evt.target.dataset.id);
+        window.localStorage.setItem('editingId', evt.target.dataset.id)
+        openEditModal();
+     }
+})
 function updateWorker() {
-    if (!editingRow) return;
-    const firstname = document.getElementById('firstname').value.trim();
-    const lastname = document.getElementById('lastname').value.trim();
-    if (!firstname || !lastname) {
-        alert('Ism va familiya bo‘sh bo‘lishi mumkin emas!');
-        return;
-    }
-    const fullname = firstname + ' ' + lastname;
-    editingRow.cells[0].innerText = fullname;
-    editingRow.cells[1].innerText = new Date().toLocaleDateString('uz-UZ');
-    editingRow.cells[2].innerText = new Date().toLocaleTimeString('uz-UZ', {hour: '2-digit', minute:'2-digit'});
     closeAddModal();
     clearAddModalInputs();
 }
-
 function openConfirmDelete() {
     document.getElementById('confirmModal').style.display = 'block';
 }
-
 function closeConfirmModal() {
     document.getElementById('confirmModal').style.display = 'none';
 }
-
+function openWeeklyModal(evt) {
+    document.getElementById('weeklyModal').style.display = 'block';
+}
+function closeWeeklyModal() {
+    document.getElementById('weeklyModal').style.display = 'none';
+}
 function deleteWorker() {
-    if (editingRow) {
-        editingRow.remove();
-    }
     closeConfirmModal();
     closeAddModal();
     clearAddModalInputs();
 }
-
 function closeAddModal() {
     document.getElementById('addModal').style.display = 'none';
 }
-
 function clearAddModalInputs() {
     document.getElementById('firstname').value = '';
     document.getElementById('lastname').value = '';
@@ -157,7 +140,6 @@ function clearAddModalInputs() {
     document.getElementById('password').value = '';
     document.getElementById('generateNum').value = '';
 }
-
 window.onclick = function(event) {
     if (event.target == document.getElementById('addModal')) {
         closeAddModal();
@@ -169,9 +151,6 @@ window.onclick = function(event) {
         closeWeeklyModal();
     }
 };
-
-// window.onload = populateTable;
-
 document.getElementById('generateNum').addEventListener('input', function (e) {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0,4);
 });

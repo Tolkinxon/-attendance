@@ -7,5 +7,6 @@ const adminRouter = express.Router();
 
 adminRouter.post('/login', loginValidate, adminController.LOGIN);
 adminRouter.post('/admin', adminController.CREATE);
+adminRouter.get('/admin/:id', adminController.GET);
 
 export default adminRouter;

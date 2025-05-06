@@ -1,15 +1,49 @@
 [
     {
         "id": 1,
+        "time": "05.05.2025/Tue/10:42:26",
+        "direction": "in",
+        "emp_id": 2,
+        "kpp_id": 1,
+        "imagePath": ""
+    },
+    {
+        "id": 2,
+        "time": "05.05.2025/Tue/17:42:26",
+        "direction": "out",
+        "emp_id": 2,
+        "kpp_id": 3,
+        "imagePath": ""
+    },
+    {
+        "id": 3,
         "time": "06.05.2025/Tue/10:42:26",
         "direction": "in",
         "emp_id": 1,
         "kpp_id": 1,
         "imagePath": ""
     },
+
     {
-        "id": 1,
+        "id": 4,
         "time": "06.05.2025/Tue/17:42:26",
+        "direction": "out",
+        "emp_id": 1,
+        "kpp_id": 1,
+        "imagePath": ""
+    },
+    {
+        "id": 5,
+        "time": "07.05.2025/Tue/11:42:26",
+        "direction": "in",
+        "emp_id": 1,
+        "kpp_id": 1,
+        "imagePath": ""
+    },
+
+    {
+        "id": 6,
+        "time": "07.05.2025/Tue/11:42:26",
         "direction": "out",
         "emp_id": 1,
         "kpp_id": 1,

@@ -23,14 +23,13 @@
             </thead>
             <tbody>
                 <% employee.map(item => { %>
-                    <tr data-id="<%-item.id%>">
-                        <td><%-item.fname%> <%-item.lname%></td>
+                    <tr>
+                        <td data-id="<%-item.id%>" class="js-edit-td"><%-item.fname%> <%-item.lname%></td>
                         <%const dataInAndOut = control.filter(filterItem => item.id == filterItem.emp_id && filterItem.time.split('/')[0] == new Date().toLocaleDateString())%>
                         <%const dateIn = dataInAndOut?.filter(dataInAndOutItem => dataInAndOutItem.direction == 'in')%>
                         <%const dateOut = dataInAndOut?.filter(dataInAndOutItem => dataInAndOutItem.direction == 'out')%>
-                        <%const dateInSplittedByTime = dateIn[0].time.split('/')%>
-                        <%const dateOutSplittedByTime = dateOut?.at(-1).time.split('/')%>
                         <%if(dateIn[0]){%>
+                            <%const dateInSplittedByTime = dateIn[0]?.time.split('/')%>
                             <td><%-dateInSplittedByTime[0]%> <%-dateInSplittedByTime[1]%></td>
                             <td><%-dateInSplittedByTime[2]%></td>
                         <%}else{%>
@@ -38,18 +37,29 @@
                             <td><%="Yo'q"%></td>
                         <%}%>
                         <%if(dateOut.at(-1)){%>
+                            <%const dateOutSplittedByTime = dateOut?.at(-1).time.split('/')%>
                             <td><%-dateOutSplittedByTime[0]%> <%-dateOutSplittedByTime[1]%></td>
                             <td><%-dateOutSplittedByTime[2]%></td>
                         <%}else{%>
-                            <td><%="Yo'q"%></td>
-                            <td><%="Yo'q"%></td>
-                        <%}%>
-                        <td><button class="generate-btn open-weekly-modal-btn" >1 haftalik</button></td>
-                    </tr>
-                <% }) %>
-            </tbody>
+                            <td><%="Shu yerda"%></td>
+                            <td><%="Shu yerda"%></td>
+                            <%}%>
+                            <td>
+                                <input type="hidden" name="id" value="<%= item.id %>">
+                                <button class="generate-btn open-weekly-modal-btn" data-id="<%=item.id%>">1 haftalik</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
         </table>
     </div>
+
+    <script>
+        const elSelectedEmployee = document.querySelector('.selectedEmployee');
+        elSelectedEmployee.addEventListener('submit', (evt)=>{
+            // evt.preventDefault();
+        })
+    </script>
 
     <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">
@@ -88,22 +98,24 @@
     </div>
 
     <!-- 1 Haftalik Modal -->
-    <div id="weeklyModal" class="modal">
-        <div class="modal-content" style="width: 600px;">
-            <h3 id="weeklyTitle">1 Haftalik Ma'lumot</h3>
+    
+    <div id="weeklyModal" class="modal" >
+        <div class="modal-content" style="width: 800px;">
             <table style="width: 100%; margin-top: 10px;">
                 <thead>
                     <tr>
-                        <th>Ism Sharif</th>
                         <th>Kelgan sana</th>
                         <th>Kelgan soat</th>
+                        <th>status</th>
                         <th>Ketgan sana</th>
                         <th>Ketgan soat</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="weeklyTableBody"></tbody>
+                <tbody id="weeklyTableBody">
+                </tbody>
             </table>
-            <button style="margin-top: 20px;" class="cancel" onclick="closeWeeklyModal()">Yopish</button>
+            <!-- <button style="margin-top: 20px;" class="cancel" onclick="closeWeeklyModal()">Yopish</button> -->
         </div>
     </div>
     <script src="/js/admin.js"></script>

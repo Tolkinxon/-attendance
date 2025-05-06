@@ -122,3 +122,8 @@ td.name-cell {
     background: #e91e63;
     color: white;
 }
+
+.js-edit-td {
+    cursor: pointer;
+}
+
