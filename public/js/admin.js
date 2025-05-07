@@ -79,7 +79,7 @@ async function sendEmployee(data){
     }
     console.log(res);
 }
-async function getEmployee(id){
+async function getEmployeeWeeklyData(id){
     const req = await fetch(`/api/admin/${id}`)
     const res = await req.json();
     if(res.status == 400) {
@@ -87,6 +87,14 @@ async function getEmployee(id){
     }
     console.log(res);
     renderWeeklData(res.data.control, elWeeklyTableBody);
+}
+async function getEmployee(id){
+    const req = await fetch(`/api/admin/employee/${id}`)
+    const res = await req.json();
+    if(res.status == 400) {
+        return alert(res.message)
+    }
+    console.log(res);
 }
 elForm.addEventListener('submit', (evt)=>{
     evt.preventDefault();
@@ -100,12 +108,11 @@ elWeeklyTable.addEventListener('click', (evt)=>{
      const editTd=   evt.target.matches('.js-edit-td');
      
      if(openWeeklyModalBtn){
-        getEmployee(evt.target.dataset.id)
+        getEmployeeWeeklyData(evt.target.dataset.id)
         openWeeklyModal();
      }
      if(editTd){
-        console.log(evt.target.dataset.id);
-        window.localStorage.setItem('editingId', evt.target.dataset.id)
+        getEmployee(evt.target.dataset.id)
         openEditModal();
      }
 })

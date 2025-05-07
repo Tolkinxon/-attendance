@@ -47,9 +47,7 @@ class AdminController {
                     }
                 })
                 const foundedEmployee = employee.find(item => item.id == id);
-                console.log(filteredControlData);
-                
-                
+                        
 
           
                 res.status(200).json({status:200, message: "User successfully founded", data: {control: filteredControlData, name: foundedEmployee.fname +" "+ foundedEmployee.lname}});
@@ -58,7 +56,18 @@ class AdminController {
                 return globalError(error, res);
             }
         }
-
+        this.GET_EMPLOYEE = async function(req, res) {
+            try {
+                const id = req.params.id;
+                const employee = await req.readFile('employee');
+      
+                const foundedEmployee = employee.find(item => item.id == id);
+          
+                res.status(200).json({status:200, message: "User successfully founded", data: foundedEmployee});
+            } catch (error) {
+                return globalError(error, res);
+            }
+        }
     }
 }
 
