@@ -33,16 +33,16 @@
                             <td><%-dateInSplittedByTime[0]%> <%-dateInSplittedByTime[1]%></td>
                             <td><%-dateInSplittedByTime[2]%></td>
                         <%}else{%>
-                            <td><%="Yo'q"%></td>
-                            <td><%="Yo'q"%></td>
+                            <td><%="-"%></td>
+                            <td><%="-"%></td>
                         <%}%>
                         <%if(dateOut.at(-1)){%>
                             <%const dateOutSplittedByTime = dateOut?.at(-1).time.split('/')%>
                             <td><%-dateOutSplittedByTime[0]%> <%-dateOutSplittedByTime[1]%></td>
                             <td><%-dateOutSplittedByTime[2]%></td>
                         <%}else{%>
-                            <td><%="Shu yerda"%></td>
-                            <td><%="Shu yerda"%></td>
+                            <td><%="-"%></td>
+                            <td><%="-"%></td>
                             <%}%>
                             <td>
                                 <input type="hidden" name="id" value="<%= item.id %>">
@@ -53,13 +53,6 @@
                     </tbody>
         </table>
     </div>
-
-    <script>
-        const elSelectedEmployee = document.querySelector('.selectedEmployee');
-        elSelectedEmployee.addEventListener('submit', (evt)=>{
-            // evt.preventDefault();
-        })
-    </script>
 
     <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">

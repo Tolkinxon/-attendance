@@ -39,12 +39,10 @@ function renderWeeklData(arr, node){
     });
     node.append(fragment);
 }
-
 function generateNumber() {
     let num = Math.floor(Math.random() * 9000) + 1000;
     document.getElementById('generateNum').value = num;
 }
-
 function openAddModal() {
     editingRow = null;
     document.getElementById('modalTitle').innerText = "Yangi Hodim Qo'shish";
@@ -53,18 +51,17 @@ function openAddModal() {
     clearAddModalInputs();
     document.getElementById('addModal').style.display = 'block';
 }
-function openEditModal() {
-    document.getElementById('firstname').value = '';
-    document.getElementById('lastname').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
-    document.getElementById('generateNum').value = '';
+function openEditModal(data) {
+    document.getElementById('firstname').value = data.fname;
+    document.getElementById('lastname').value = data.lname;
+    document.getElementById('email').value = data.email;
+    document.getElementById('password').value = data.phone_number;
+    document.getElementById('generateNum').value = data.user_id;
 
     document.getElementById('modalTitle').innerText = 'Ma\'lumotni Yangilash';
     document.getElementById('mainActionBtn').innerText = 'Yangilash';
-    document.getElementById('mainActionBtn').onclick = updateWorker;
+    document.getElementById('mainActionBtn').dataset.id = data.id
     document.getElementById('deleteBtn').style.display = 'inline-block';
-
     document.getElementById('addModal').style.display = 'block';
 }
 async function sendEmployee(data){
@@ -94,13 +91,31 @@ async function getEmployee(id){
     if(res.status == 400) {
         return alert(res.message)
     }
-    console.log(res);
+    openEditModal(res.data);
+}
+async function putEmployee(data, id){
+    const req = await fetch(`/api/admin/employee/${id}`,{
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    })
+    const res = await req.json();
+    if(res.status == 400) {
+        return alert(res.message)
+    }
+    window.location.reload();
 }
 elForm.addEventListener('submit', (evt)=>{
     evt.preventDefault();
     const formData = new FormData(elForm);
     const data = Object.fromEntries(formData);
-    sendEmployee(data);
+    const mainActionBtn = document.getElementById('mainActionBtn');
+    if(mainActionBtn.innerText == "Yaratish")  sendEmployee(data);
+    else {
+        const id = Number(mainActionBtn.dataset.id);
+        for(let key in data)  data[key] = data[key].trim();
+        putEmployee(data, id);
+    }
     closeAddModal();
 })
 elWeeklyTable.addEventListener('click', (evt)=>{
@@ -113,7 +128,6 @@ elWeeklyTable.addEventListener('click', (evt)=>{
      }
      if(editTd){
         getEmployee(evt.target.dataset.id)
-        openEditModal();
      }
 })
 function updateWorker() {
