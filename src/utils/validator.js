@@ -21,10 +21,10 @@ export function loginValidate(req, res, next){
 export function employeeValidate(req, res, next){
     const employeeSchema = Joi.object({
         email: Joi.string().min(3).max(20).pattern(emailPattern).required().messages({'string.pattern.base':'Incorrect email!', 'any.required':'Email is requeired!', 'string.empty': 'Email is empty please type your email!'}),
-        user_id: Joi.number().min(4).max(4).required().messages({'any.required':'Total is required!'}),
+        user_id: Joi.number().required().messages({'any.required':'User id is required!'}),
         lname: Joi.string().min(3).max(20).required().messages({'any.required':'Last name is requeired!'}),
         fname: Joi.string().min(3).max(20).required().messages({'any.required':'First name is requeired!'}),
-        phone_num: Joi.string().min(3).max(20).pattern(phonePattern).required().messages({'string.pattern.base':'Incorrect phone number!',  'any.required':'Phone number is requeired!'}),
+        phone_number: Joi.string().min(3).max(20).pattern(phonePattern).required().messages({'string.pattern.base':'Incorrect phone number!',  'any.required':'Phone number is requeired!'}),
     });
 
     const { error, value } = employeeSchema.validate(req.body);
