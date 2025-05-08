@@ -49,8 +49,11 @@ async function sendId(data){
         body: JSON.stringify(data)
     })
     const res = await req.json();
+
     if(res.status == 400) {
-        return alert(res.message)
+        alert(res.message);
+        workerId.value = '';
+        return  
     }
 
     if(res.condition == "in") {

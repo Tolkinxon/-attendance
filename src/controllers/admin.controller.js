@@ -22,13 +22,12 @@ class AdminController {
                 const employee = req.body;
                 const employeesData = await req.readFile('employee');
                 
-                if(employeesData.some(item => item.email == employee.email)) throw new ClientError('This user already excist!', 4000);
+                if(employeesData.some(item => item.email == employee.email)) throw new ClientError('This user already excist!', 400);
 
                 const newEmployee = {id: employeesData ? employeesData.at(-1).id + 1:1, ...employee}
                 employeesData.push(newEmployee);
                 await req.writeFile('employee', employeesData);
                 res.status(200).json({message: "User successfully added", status: 200});
-
             } catch (error) {
                 return globalError(error, res);
             }
@@ -47,8 +46,6 @@ class AdminController {
                     }
                 })
                 const foundedEmployee = employee.find(item => item.id == id);
-                        
-
           
                 res.status(200).json({status:200, message: "User successfully founded", data: {control: filteredControlData, name: foundedEmployee.fname +" "+ foundedEmployee.lname}});
 
@@ -92,6 +89,21 @@ class AdminController {
                 const confirmWriteFile = await req.writeFile('employee', employee);
                 if(confirmWriteFile) return res.status(200).json({status:200, message: "User successfully deleted"});
                 else throw new ServerError("Something went wrong!");
+            } catch (error) {
+                return globalError(error, res);
+            }
+        }
+        this.CHECK_ID = async function(req, res) {
+            try {
+                const user_id = req.body.user_id;
+                const employee = await req.readFile('employee');
+
+                console.log(user_id);
+                
+
+                const foundEmployee = employee.find(item => item.user_id == user_id);
+                if(foundEmployee == undefined) return res.status(200).json({status:200, message: "This id is not excist",});
+                throw new ClientError('This id already excist', 400);
             } catch (error) {
                 return globalError(error, res);
             }

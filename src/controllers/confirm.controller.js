@@ -16,8 +16,9 @@ class ConfirmController {
                 const employee = req.body;
                 const employeesData = await req.readFile('employee');
                 const foundedEmployee = employeesData.find(item => item.user_id == employee.user_id);
+                console.log(foundedEmployee);
                 
-                if(foundedEmployee == -1) throw new ClientError('This id is not excist!', 400);
+                if(foundedEmployee == undefined) return res.status(400).json({message: "This id is not excist", status: 400});
                 
                 const controlsData = await req.readFile('control');
                 const filteredControl = controlsData.filter(controlItem => controlItem.emp_id == foundedEmployee.id);

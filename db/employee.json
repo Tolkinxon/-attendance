@@ -6,21 +6,5 @@
         "phone_number": "998774779844",
         "user_id": "1111",
         "id": 1
-    },
-    {
-        "fname": "Azizbek",
-        "lname": "SHuxratov",
-        "email": "azizbek@gmail.com",
-        "phone_number": "998996361889",
-        "user_id": "0456",
-        "id": 3
-    },
-    {
-        "id": 4,
-        "fname": "Muhammadamin",
-        "lname": "Abdullayev",
-        "email": "muhammadamin@gmail.com",
-        "phone_number": "6520456234",
-        "user_id": "0230"
     }
 ]

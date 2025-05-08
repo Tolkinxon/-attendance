@@ -7,7 +7,30 @@ const elWeeklyTable = document.querySelector('#workerTable');
 const elWeeklyTableBody = document.querySelector('#weeklyTableBody');
 const elDeleteBtn = document.querySelector('.js-delete-btn');
 const elLogOut = document.querySelector('.js-log-out');
+const generateNum = document.querySelector('#generateNum');
 
+async function sendId(data){
+    const req = await fetch('/api/admin/employee/check-id', {
+        method: 'POST',
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data),
+        authorization: token
+    })
+    const res = await req.json();
+
+    if(res.status == 400) {
+        alert(res.message);
+        return  
+    }
+}
+generateNum.addEventListener('input', (evt)=>{
+    const data = {
+        user_id: evt.target.value
+    }
+    console.log(data);
+    
+    sendId(data);
+})
 function renderWeeklData(arr, node){
     node.innerHTML='';
     const fragment = document.createDocumentFragment();
@@ -36,7 +59,12 @@ function renderWeeklData(arr, node){
             td1.textContent = time.split('/')[0] + " " + time.split('/')[1];
             td2.textContent =  time.split('/')[2];
             td3.textContent =  gate_location;
-            temporaryFragment.append(td1, td2, td3)
+            temporaryFragment.append(td1, td2, td3);
+            if(arr.length - 1 == idx){
+                const tr = document.createElement('tr');
+                tr.append(temporaryFragment);
+                fragment.append(tr);
+            }
         }
     });
     node.append(fragment);
@@ -68,7 +96,8 @@ async function sendEmployee(data){
     const req = await fetch('/api/admin/employee', {
         method: 'POST',
         headers:{"Content-Type":"application/json"},
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        authorization: token
     })
     const res = await req.json();
     if(res.status == 400) {
@@ -77,16 +106,19 @@ async function sendEmployee(data){
     window.location.reload();
 }
 async function getEmployeeWeeklyData(id){
-    const req = await fetch(`/api/admin/${id}`)
+    const req = await fetch(`/api/admin/${id}`,{headers:{authorization: token}})
     const res = await req.json();
     if(res.status == 400) {
         return alert(res.message)
     }
-    console.log(res);
+
+    if(res.status == 500) {
+        return alert(res.message)
+    }
     renderWeeklData(res.data.control, elWeeklyTableBody);
 }
 async function getEmployee(id){
-    const req = await fetch(`/api/admin/employee/${id}`)
+    const req = await fetch(`/api/admin/employee/${id}`,{headers:{authorization: token}})
     const res = await req.json();
     if(res.status == 400) {
         return alert(res.message)
@@ -97,7 +129,8 @@ async function putEmployee(data, id){
     const req = await fetch(`/api/admin/employee/${id}`,{
         method: "PUT",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        authorization: token
     })
     const res = await req.json();
     if(res.status == 400) {
@@ -108,6 +141,7 @@ async function putEmployee(data, id){
 async function deleteEmployee(id){
     const req = await fetch(`/api/admin/employee/${id}`,{
         method: "DELETE",
+        headers:{authorization: token}
     })
     const res = await req.json();
     if(res.status == 400) {

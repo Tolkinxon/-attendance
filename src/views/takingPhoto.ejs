@@ -158,7 +158,7 @@
           body: formData
         })
         .then(res => res.text())
-        .then(data => {alert('Yuborildi: '); window.location = '/';})
+        .then(data => {alert('Rasm muvaffaqiyatli yuklandi'); window.location = '/';})
         .catch(err => alert('Xatolik: ' + err));
       }, 'image/jpeg');
     });

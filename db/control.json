@@ -12,19 +12,5 @@
         "kpp_id": 2,
         "emp_id": 1,
         "direction": "out"
-    },
-    {
-        "id": 5,
-        "time": "08.05.2025/Thu/13:07:29",
-        "kpp_id": 1,
-        "emp_id": 1,
-        "direction": "in"
-    },
-    {
-        "id": 6,
-        "time": "08.05.2025/Thu/13:08:04",
-        "kpp_id": 1,
-        "emp_id": 1,
-        "direction": "out"
     }
 ]
