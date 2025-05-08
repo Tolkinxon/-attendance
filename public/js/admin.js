@@ -5,6 +5,8 @@ if(!token) window.location = '/login';
 const elForm = document.querySelector('.js-form');
 const elWeeklyTable = document.querySelector('#workerTable');
 const elWeeklyTableBody = document.querySelector('#weeklyTableBody');
+const elDeleteBtn = document.querySelector('.js-delete-btn');
+const elLogOut = document.querySelector('.js-log-out');
 
 function renderWeeklData(arr, node){
     node.innerHTML='';
@@ -44,8 +46,6 @@ function generateNumber() {
     document.getElementById('generateNum').value = num;
 }
 function openAddModal() {
-    editingRow = null;
-    document.getElementById('modalTitle').innerText = "Yangi Hodim Qo'shish";
     document.getElementById('mainActionBtn').innerText = 'Yaratish';
     document.getElementById('deleteBtn').style.display = 'none';
     clearAddModalInputs();
@@ -58,14 +58,14 @@ function openEditModal(data) {
     document.getElementById('password').value = data.phone_number;
     document.getElementById('generateNum').value = data.user_id;
 
-    document.getElementById('modalTitle').innerText = 'Ma\'lumotni Yangilash';
     document.getElementById('mainActionBtn').innerText = 'Yangilash';
     document.getElementById('mainActionBtn').dataset.id = data.id
     document.getElementById('deleteBtn').style.display = 'inline-block';
+    document.querySelector('.js-delete-btn').dataset.id = data.id
     document.getElementById('addModal').style.display = 'block';
 }
 async function sendEmployee(data){
-    const req = await fetch('/api/admin', {
+    const req = await fetch('/api/admin/employee', {
         method: 'POST',
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify(data)
@@ -74,7 +74,7 @@ async function sendEmployee(data){
     if(res.status == 400) {
         return alert(res.message)
     }
-    console.log(res);
+    window.location.reload();
 }
 async function getEmployeeWeeklyData(id){
     const req = await fetch(`/api/admin/${id}`)
@@ -105,12 +105,22 @@ async function putEmployee(data, id){
     }
     window.location.reload();
 }
+async function deleteEmployee(id){
+    const req = await fetch(`/api/admin/employee/${id}`,{
+        method: "DELETE",
+    })
+    const res = await req.json();
+    if(res.status == 400) {
+        return alert(res.message)
+    }
+    window.location.reload();
+}
 elForm.addEventListener('submit', (evt)=>{
     evt.preventDefault();
     const formData = new FormData(elForm);
     const data = Object.fromEntries(formData);
     const mainActionBtn = document.getElementById('mainActionBtn');
-    if(mainActionBtn.innerText == "Yaratish")  sendEmployee(data);
+    if(mainActionBtn.innerText == "Yaratish") {for(let key in data)  data[key] = data[key].trim();  sendEmployee(data);}
     else {
         const id = Number(mainActionBtn.dataset.id);
         for(let key in data)  data[key] = data[key].trim();
@@ -130,10 +140,17 @@ elWeeklyTable.addEventListener('click', (evt)=>{
         getEmployee(evt.target.dataset.id)
      }
 })
-function updateWorker() {
+elDeleteBtn.addEventListener('click', (evt)=>{
+    const id = evt.target.dataset.id;
+    deleteEmployee(id);
+    closeConfirmModal();
     closeAddModal();
     clearAddModalInputs();
-}
+})
+elLogOut.addEventListener('click', () => {
+    window.localStorage.clear(); 
+    window.location.reload();
+})
 function openConfirmDelete() {
     document.getElementById('confirmModal').style.display = 'block';
 }
@@ -145,11 +162,6 @@ function openWeeklyModal(evt) {
 }
 function closeWeeklyModal() {
     document.getElementById('weeklyModal').style.display = 'none';
-}
-function deleteWorker() {
-    closeConfirmModal();
-    closeAddModal();
-    clearAddModalInputs();
 }
 function closeAddModal() {
     document.getElementById('addModal').style.display = 'none';

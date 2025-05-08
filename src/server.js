@@ -5,7 +5,9 @@ import serverConfig from './config.js';
 import viewsRouter from './routes/views.routes.js';
 import model from './model/model.js';
 import mainRouter from './routes/main.routes.js';
-const { PORT, viewsPath, publicPath} = serverConfig;
+import currentTime from './middlewares/currentTime.js';
+import cron from './middlewares/cron.js';
+const { PORT, viewsPath, publicPath, uploadsPath} = serverConfig;
 
 const app = express();
 
@@ -19,7 +21,10 @@ app.use(helmet.frameguard());
 app.set('view engine', 'ejs');
 app.set('views', viewsPath());
 app.use(express.static(publicPath()));
+app.use(express.static(uploadsPath()));
 app.use(model);
+app.use(currentTime);
+app.use(cron);
 
 
 app.use('/api', mainRouter);

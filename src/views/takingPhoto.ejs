@@ -116,6 +116,8 @@
     const cancelBtn = document.getElementById('cancel');
     const actionButtons = document.querySelector('.action-buttons');
     const context = canvas.getContext('2d');
+    const id = window.location.pathname.split('/')[2];
+
 
     // Kamerani ishga tushurish
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -149,14 +151,14 @@
     uploadBtn.addEventListener('click', async () => {
       canvas.toBlob((blob) => {
         const formData = new FormData();
-        formData.append('photo', blob, 'photo.jpg');
+        formData.append('file', blob, 'photo.jpg');
 
-        fetch('http://localhost:3000/upload', {
+        fetch(`http://localhost:3000/api/upload/${id}`, {
           method: 'POST',
           body: formData
         })
         .then(res => res.text())
-        .then(data => alert('Yuborildi: ' + data))
+        .then(data => {alert('Yuborildi: '); window.location = '/';})
         .catch(err => alert('Xatolik: ' + err));
       }, 'image/jpeg');
     });

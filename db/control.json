@@ -1,52 +1,30 @@
 [
     {
-        "id": 1,
-        "time": "05.05.2025/Tue/10:42:26",
-        "direction": "in",
-        "emp_id": 2,
-        "kpp_id": 1,
-        "imagePath": ""
-    },
-    {
-        "id": 2,
-        "time": "05.05.2025/Tue/17:42:26",
-        "direction": "out",
-        "emp_id": 2,
-        "kpp_id": 3,
-        "imagePath": ""
-    },
-    {
         "id": 3,
-        "time": "06.05.2025/Tue/10:42:26",
-        "direction": "in",
-        "emp_id": 1,
+        "time": "08.05.2025/Thu/08:55:41",
         "kpp_id": 1,
-        "imagePath": ""
+        "emp_id": 1,
+        "direction": "in"
     },
-
     {
         "id": 4,
-        "time": "06.05.2025/Tue/17:42:26",
-        "direction": "out",
+        "time": "08.05.2025/Thu/08:56:08",
+        "kpp_id": 2,
         "emp_id": 1,
-        "kpp_id": 1,
-        "imagePath": ""
+        "direction": "out"
     },
     {
         "id": 5,
-        "time": "07.05.2025/Tue/11:42:26",
-        "direction": "in",
-        "emp_id": 1,
+        "time": "08.05.2025/Thu/13:07:29",
         "kpp_id": 1,
-        "imagePath": ""
+        "emp_id": 1,
+        "direction": "in"
     },
-
     {
         "id": 6,
-        "time": "07.05.2025/Tue/11:42:26",
-        "direction": "out",
-        "emp_id": 1,
+        "time": "08.05.2025/Thu/13:08:04",
         "kpp_id": 1,
-        "imagePath": ""
+        "emp_id": 1,
+        "direction": "out"
     }
 ]

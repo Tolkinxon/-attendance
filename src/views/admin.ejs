@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Admin Panel</h1>
+    <button class="log-out js-log-out">Log out</button>
     <div class="container">
         <button class="add-btn" onclick="openAddModal()">Yangi Hodim Qo'shish</button>
         <table id="workerTable">
@@ -56,7 +57,6 @@
 
     <!-- Add/Edit Modal -->
     <div id="addModal" class="modal">
-        <h3 id="modalTitle">Yangi Hodim Qo'shish</h3>
         <form class="modal-content js-form" autocomplete="off">
             <input name="fname" type="text" id="firstname" placeholder="Ism">
             <input name="lname" type="text" id="lastname" placeholder="Familiya">
@@ -84,7 +84,7 @@
         <div class="modal-content">
             <h3>O'chirishni xohlaysizmi?</h3>
             <div class="right-buttons" style="justify-content: center; margin-top: 20px;">
-                <button class="confirm" onclick="deleteWorker()">Ha</button>
+                <button class="confirm js-delete-btn">Ha</button>
                 <button class="cancel" onclick="closeConfirmModal()">Yo'q</button>
             </div>
         </div>

@@ -7,6 +7,18 @@ body {
 h1 {
     text-align: center;
 }
+.log-out {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+    background-color: crimson;
+    padding: 15px 25px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 800;
+}
 .container {
     max-width: 1000px;
     background: #fff;

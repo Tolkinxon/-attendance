@@ -6,7 +6,8 @@ import path from 'node:path';
    TOKEN_KEY: config.get('TOKEN_KEY'),
    publicPath: () => path.join(process.cwd(), 'public'),
    dbPath: (fileName) => path.join(process.cwd(), 'db', fileName + '.json'),
-   viewsPath: () => path.join(process.cwd(), 'src', 'views')
+   viewsPath: () => path.join(process.cwd(), 'src', 'views'),
+   uploadsPath: () => path.join(process.cwd(), 'src', 'uploads')
 }
 
 export default serverConfig;

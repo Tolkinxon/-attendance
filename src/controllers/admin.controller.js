@@ -83,6 +83,19 @@ class AdminController {
                 return globalError(error, res);
             }
         }
+        this.DELETE_EMPLOYEE = async function(req, res) {
+            try {
+                const id = req.params.id;
+                const employee = await req.readFile('employee');
+                const foundedIndexEmployee = employee.findIndex(item => item.id == id);
+                employee.splice(foundedIndexEmployee, 1);
+                const confirmWriteFile = await req.writeFile('employee', employee);
+                if(confirmWriteFile) return res.status(200).json({status:200, message: "User successfully deleted"});
+                else throw new ServerError("Something went wrong!");
+            } catch (error) {
+                return globalError(error, res);
+            }
+        }
     }
 }
 
